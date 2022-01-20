@@ -1,0 +1,169 @@
+body {
+    font-size: 0.7rem;
+    background: #E4E8EF;
+    font-family: Verdana, Arial;
+    margin:0px; 
+    padding: 0px; 
+    width: 100%;
+}
+
+.container-added {
+    margin-left: 10px;
+    margin-top: 10px;
+    background: #E4E8EF;
+    border: solid 1px;
+    height: 200px;
+    width: 600px;
+}
+
+footer, 
+header {
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 auto;
+    background: #232333;
+    height: 53px;
+    display: flex;
+    text-align: left;
+    align-items: center;
+    color: blanchedalmond;
+    font-size: 0.7rem;
+} 
+
+.display-none {
+    display: none;
+}
+
+.container {
+    width: 100%;
+}
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left {
+    width: 150px;
+    position: relative;
+    min-height: 700px;
+    height: 100%;
+    float: left;
+    display: flex;
+    flex-direction: column;
+    /* display: inline; */
+}
+
+#router1{
+    /* position: absolute; */
+    /* right: 15px; */
+    text-align: center;
+}
+
+.add {
+    padding: 0px 15px;
+}
+
+.vl {
+    border-left: 1px solid black;
+    position: absolute;
+    left: 100%;
+    margin-left: -3px;
+    top: 0;
+    height: 100%;
+}
+
+.left-text {
+    text-decoration: none;
+    color: #232333;
+    float: left;
+    display: inline;
+    margin: 0;
+    padding: 5px 15px;
+    position: relative;
+}
+
+.container-filter{
+    height: 20px;
+}
+
+.center {
+    width: 80%;
+    float: left;
+}
+
+.table-main {
+    /* height: 20px; */
+    margin-top: 0px;
+    /* display: fixed; */
+}
+
+#router-hand {
+    position: absolute;
+    right: 15px;
+}
+
+/* .table-color {
+    height: 230px;
+} */
+
+.table-th {
+    background: #FC8E00;
+    color: white;
+    padding: 0px 0px 0px 0px;
+    border-width: 1px;
+    border-color: white;
+    text-align: center;
+}
+
+.added-rout{
+    background: #FC8E00;
+    width: 600px;
+    color: white;
+}
+
+.table-color {
+    height: 35px;
+    background: #C9D0DC;
+}
+
+#th-model {
+    width: 70px;
+    text-align: center;
+}
+
+#th-mac {
+    width: 150px;
+    text-align: center;
+}
+
+#th-status {
+    width: 100px;
+    text-align: center;
+}
+
+#th-monter {
+    width: 180px;
+    text-align: center;
+}
+
+#th-id {
+    width: 100px;
+    text-align: center;
+}
+
+#th-comment {
+    width: 300px;
+    text-align: center;
+}
+
+#th-date {
+    width: 200px;
+    text-align: center;
+}
+
+#th-btn {
+    width: 100px;
+    text-align: center;
+}

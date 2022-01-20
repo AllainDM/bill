@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" href="{{ url_for('static', filename='css/style.css')}}" rel="stylesheet" />
+    <title>{{ title }}</title>
+</head>
+<body>
+<header>
+        <div class="head">
+            <div class="text-top">Система CopperBill</div>
+<!--            <select name="monter1" id="monter-main">-->
+<!--                <option value="111"></option>-->
+<!--                <option value="222">Анатолий Чепига</option>-->
+<!--                <option value="333">Руслан Боширов</option>-->
+<!--                <option value="444">Александр Петров</option>-->
+<!--            </select>-->
+        </div>
+</header>
+{% block content -%}
+
+{% endblock -%}
+<footer>
+        <div class="text-down">Система Copper Billing v.0.1 (c) 2022 Sergey Kuropyatnikov </div>
+        <div class="text-down" id="date"></div>
+</footer>
+</body>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</html>

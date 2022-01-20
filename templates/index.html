@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+
+<div class="container">
+    <div class="left">
+        <a class="left-text" href="https://bill.unetcom.ru/">Главная</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Сообщения</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Пользователи</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Тарифы</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Отчеты</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Бухгалтерия</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Сети</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Администраторы</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">SMS-Центр</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Обьекты</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Оборудование</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Обращения</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Наблюдение</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Для меня</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Аварии</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Заявки</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">ТВ приставки</a> <br>
+        <a class="left-text" href="https://bill.unetcom.ru/">Персоны</a> <br>
+        <a class="left-text" href="http://127.0.0.1:5000/logout">Выйти (ТВ-биллинг)</a>
+        <div class="vl"></div>
+    </div>
+
+    <div class="center">
+            <div class="container-added">
+                <table class="table-main">
+                    <tr class="table-color">
+                        <th class="added-rout" class="table-th">Добавление ТВ приставки</th>
+                    </tr>
+                </table>
+                <div class="text add">Монтажник:</div>
+                <select class="add" name="monter1" id="monter">
+                    <option value="111"></option>
+                    <option value="222">Анатолий Чепига</option>
+                    <option value="333">Руслан Боширов</option>
+                    <option value="444">Александр Петров</option>
+                </select>
+                <div class="text add">Статус:</div>
+                <select class="add" name="status" id="status">
+                    <option value="111"></option>
+                    <option value="222">В офисе</option>
+                    <option value="333">На руках</option>
+                    <option value="444">Установлен</option>
+                </select>
+                <div class="text add">Mac:</div>
+                <input type="text" id="mac" size="10px" value="00319273fff8">
+                <div class="text add">Комментарий:</div>
+                <input type="text" id="comment" size="20px">
+                <button id="add_tv">Добавить ТВ приставку</button>
+            </div>
+            <table class="table-main" id="tab1">
+
+            </table>
+            <table class="table-main" id="tab2">
+
+            </table>
+            <table class="table-main" id="tab3">
+
+            </table>
+            <table class="table-main" id="tab4">
+
+            </table>
+    </div>
+</div>
+
+{% endblock %}
