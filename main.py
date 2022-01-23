@@ -137,7 +137,7 @@ def check_tv_status(monter, id_user):
 
 
 @app.route("/index")
-# @app.route("/")
+@app.route("/")
 @login_required
 def index():
     # db = get_db()
@@ -267,5 +267,5 @@ def save():
 
 
 if __name__ == "__main__":
-    # app.run(debug=True)
-    app.run(host='0.0.0.0')
+    app.run(debug=True)
+    # app.run(host='0.0.0.0')

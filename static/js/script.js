@@ -1,4 +1,6 @@
-console.log('Скрипт успешно загружен')
+console.log('Скрипт успешно загружен');
+// mainUrl = 'http://bill2unetcom.ru';
+// mainUrl = '127.0.0.1';
 
 // Первичная загрузка шапки таблицы
 function tableStart(tab) {
@@ -18,7 +20,7 @@ tableStart("tab1");
 // Запрос на сервер при загрузке страницы
 function start(type) {
     const req = new XMLHttpRequest();
-    req.open("GET", `http://bill2unetcom.ru/${type}`);
+    req.open("GET", `/${type}`);
      req.addEventListener('load', () => {
           const response = JSON.parse(req.responseText);
           console.log(response);
@@ -96,11 +98,16 @@ function output(res) {
                 <td id='th-mac'>${res[num][1]}</td> 
                 <td id='th-status'>${res[num][5]}</td> 
                 <td id='th-monter'><select id="monter${res[num][0]}">
-                    <option value="111">${res[num][3]}</option>
-                    <option value="222">Анатолий Чепига</option>
-                    <option value="333">Руслан Боширов</option>
-                    <option value="444">Александр Петров</option>
-                    <option value="555"></option>
+                    <option value="001">${res[num][3]}</option>
+                    <option value="002">Волосевич Дмитрий</option>
+                    <option value="003">Комиссаров Александр</option>
+                    <option value="004">Маснык Игорь</option>
+                    <option value="005">Куропятников Сергей</option>
+                    <option value="006">Павлов Юра</option>
+                    <option value="007">Соловьев Александр</option>
+                    <option value="008">Черных Анатолий</option>
+                    <option value="009">Шестаков Владимир</option>
+                    <option value="010">неизвестно</option>
                 </select></td>
                 <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][2]}"></td> 
                 <td id='th-comment'><a href="https://bill.unetcom.ru/?mod=usr&act=viewinfo&uid=${res[num][2]}" target="_blank">${res[num][2]}</a> ${res[num][4]}</td> 
@@ -242,7 +249,7 @@ function saveTV(num) {
 // POST запрос на сервер, первый агрумент ид Приставки, второй "тип" запроса(добавить, удалить, отредактировать...)
 function postMain(tv, postType) {
     const request = new XMLHttpRequest();
-    request.open('POST', `http://bill2unetcom.ru/${postType}`);
+    request.open('POST', `/${postType}`);
     request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
     
     console.log(JSON.stringify(tv))

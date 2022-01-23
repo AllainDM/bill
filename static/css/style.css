@@ -134,12 +134,12 @@ header {
 }
 
 #th-mac {
-    width: 150px;
+    width: 110px;
     text-align: center;
 }
 
 #th-status {
-    width: 100px;
+    width: 80px;
     text-align: center;
 }
 
@@ -154,16 +154,16 @@ header {
 }
 
 #th-comment {
-    width: 300px;
+    width: 400px;
     text-align: center;
 }
 
 #th-date {
-    width: 200px;
+    width: 150px;
     text-align: center;
 }
 
 #th-btn {
-    width: 100px;
+    width: 80px;
     text-align: center;
 }
