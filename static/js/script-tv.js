@@ -1,4 +1,6 @@
-console.log('Скрипт успешно загружен');
+console.log('Скрипт для приставок успешно загружен');
+// mainUrl = 'http://bill2unetcom.ru';
+// mainUrl = '127.0.0.1';
 
 // Первичная загрузка шапки таблицы
 function tableStart(tab) {
@@ -19,7 +21,7 @@ tableStart("tab1");
 function start(type) {
     const req = new XMLHttpRequest();
     req.open("GET", `/${type}`);
-    req.addEventListener('load', () => {
+     req.addEventListener('load', () => {
           const response = JSON.parse(req.responseText);
           console.log(response);
           output(response);
@@ -215,19 +217,19 @@ document.getElementById('add_tv').addEventListener('click', () => {
 // Кнопка удалить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output). 
 function btnDelete(num) {
     document.getElementById(`th-del${num}`).addEventListener('click', () => {
-        console.log(`th-del${num}`);
+        // console.log(`th-del${num}`);
         postMain(num, "delete");
     });
-    console.log(`th-del${num}`);
+    // console.log(`th-del${num}`);
 };
 
 // Кнопка сохранить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output).
 function btnSave(num) {
     document.getElementById(`th-sav${num}`).addEventListener('click', () => {
-        console.log(`th-sav${num}`);
+        // console.log(`th-sav${num}`);
         saveTV(num);
     });
-    console.log(`th-sav${num}`);
+    // console.log(`th-sav${num}`);
 };
 
 function saveTV(num) {
@@ -254,8 +256,6 @@ function postMain(tv, postType) {
     const request = new XMLHttpRequest();
     request.open('POST', `/${postType}`);
     request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-
-    
     
     console.log(JSON.stringify(tv))
     request.send(JSON.stringify(tv));
@@ -264,11 +264,5 @@ function postMain(tv, postType) {
     // !!! Не работает, нужно поработать на коллбеком
     // !!!  Два раза отображает таблицу
     // start();
-
-    request.addEventListener('load', () => {
-        // const response = JSON.parse(req.responseText);
-        console.log("Загрузка");
-        start("start");
-    });
 };
 

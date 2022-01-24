@@ -1,8 +1,9 @@
-console.log('Скрипт успешно загружен');
+console.log('Скрипт для роутеров успешно загружен');
 
 // Первичная загрузка шапки таблицы
 function tableStart(tab) {
     document.getElementById(`${tab}`).innerHTML = `<tr class="table-color">
+            <th class="table-th" id='th-model'>Модель</th>
             <th class="table-th" id='th-mac'>Мак адрес</th>
             <th class="table-th" id='th-status'>Статус</th>
             <th class="table-th" id='th-monter'>Монтажник</th>
@@ -19,7 +20,7 @@ tableStart("tab1");
 function start(type) {
     const req = new XMLHttpRequest();
     req.open("GET", `/${type}`);
-    req.addEventListener('load', () => {
+     req.addEventListener('load', () => {
           const response = JSON.parse(req.responseText);
           console.log(response);
           output(response);
@@ -29,20 +30,6 @@ function start(type) {
     });
     req.send();
 };
-
-// Выход
-// Кнопка выхода напрямую делает запрос на бек `http://127.0.0.1:5000/logout`
-// function logout() {
-//     const req = new XMLHttpRequest();
-//     req.open("GET", `http://127.0.0.1:5000/logout`);
-//      req.addEventListener('load', () => {
-//           console.log("Выход из профиля");
-//     });
-//     req.addEventListener('error', () => {
-//         console.log('error')
-//     });
-//     req.send();
-// }
 
 // Отображение ответа с сервера
 // Таблица с БД
@@ -98,6 +85,7 @@ function output(res) {
         // Ранее селекту монтер и инпуту для ИД присваивался порядковый номер в массиве, id="monter${num + 1}" и id="idUser${num + 1}", сейчас ид приставки в БД
         tab.insertAdjacentHTML("beforeend", 
                 `<tr class="table-color">
+                <th id='th-model'>Модель222</th>
                 <td id='th-mac'>${res[num][1]}</td> 
                 <td id='th-status'>${res[num][5]}</td> 
                 <td id='th-monter'><select id="monter${res[num][0]}">
@@ -122,25 +110,9 @@ function output(res) {
         btnDelete(res[num][0]);
         btnSave(res[num][0]);
     });
-    //  <td id='th-monter'>${res[num][3]}</td>
-    // Вызов функции навешивания событий для кнопок "удалить"
-    
-    
 };
 
 start("start");
-
-// Фукция заменена на общую со вторым аргументом "тип" запроса: postMain
-// Добавление приставки на сервер
-// POST запрос
-// function postTV(tv) {
-//     const request = new XMLHttpRequest();
-//     request.open('POST', 'http://127.0.0.1:5000/post');
-//     request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    
-//     console.log(JSON.stringify(tv))
-//     request.send(JSON.stringify(tv));
-// };
 
 // Сбор инфы для отправки на сервер
 document.getElementById('add_tv').addEventListener('click', () => {
@@ -157,25 +129,9 @@ document.getElementById('add_tv').addEventListener('click', () => {
 
     let stat = document.getElementById('status');
     let status = stat.options[stat.selectedIndex].text;
-    // if (status == '') {
-    //     alert('Укажите статус(Местонахождение приставки).');
-    //     return;
-    // };
-
+  
     let date = new Date().toLocaleString();
     console.log(date)
-
-    // Убираю параметр status_id из-за сложностей в автоопределении статуса на беке
-    // let status_id;
-    // if (status == 'Установлен') {
-    //     status_id = 4;
-    // } else if (status == 'В офисе') {
-    //     status_id = 2;
-    // } else if (status == 'На руках') {
-    //     status_id = 3;
-    // }  else {
-    //     status_id = 1;
-    // }
 
     console.log(monter);
     console.log(status);
@@ -202,32 +158,22 @@ document.getElementById('add_tv').addEventListener('click', () => {
     // start();
 });
 
-// Делаем тесторую кнопку "удалить". Вызывается при загрузки приставок с сервера
-// function allBtnDelete() {
-//     document.querySelectorAll('.btn-del').forEach((btn, i) => {
-//         btn.addEventListener('click', () => {
-//             console.log(i);
-//             deleteTV(i);
-//         });
-//     });
-// };
-
 // Кнопка удалить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output). 
 function btnDelete(num) {
     document.getElementById(`th-del${num}`).addEventListener('click', () => {
-        console.log(`th-del${num}`);
+        // console.log(`th-del${num}`);
         postMain(num, "delete");
     });
-    console.log(`th-del${num}`);
+    // console.log(`th-del${num}`);
 };
 
 // Кнопка сохранить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output).
 function btnSave(num) {
     document.getElementById(`th-sav${num}`).addEventListener('click', () => {
-        console.log(`th-sav${num}`);
+        // console.log(`th-sav${num}`);
         saveTV(num);
     });
-    console.log(`th-sav${num}`);
+    // console.log(`th-sav${num}`);
 };
 
 function saveTV(num) {
@@ -254,8 +200,6 @@ function postMain(tv, postType) {
     const request = new XMLHttpRequest();
     request.open('POST', `/${postType}`);
     request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-
-    
     
     console.log(JSON.stringify(tv))
     request.send(JSON.stringify(tv));
@@ -264,11 +208,5 @@ function postMain(tv, postType) {
     // !!! Не работает, нужно поработать на коллбеком
     // !!!  Два раза отображает таблицу
     // start();
-
-    request.addEventListener('load', () => {
-        // const response = JSON.parse(req.responseText);
-        console.log("Загрузка");
-        start("start");
-    });
 };
 

@@ -142,7 +142,23 @@ def check_tv_status(monter, id_user):
 def index():
     # db = get_db()
     # dbase = FDataBase(db)
-    return render_template('index.html', title="bill-storage v.0.1")
+    return render_template('index.html', title="Главная")
+
+
+@app.route("/tv")
+@login_required
+def index_tv():
+    # db = get_db()
+    # dbase = FDataBase(db)
+    return render_template('tv.html', title="ТВ Приставки")
+
+
+@app.route("/router")
+@login_required
+def index_router():
+    # db = get_db()
+    # dbase = FDataBase(db)
+    return render_template('router.html', title="Роутеры")
 
 
 @app.teardown_appcontext
@@ -187,7 +203,7 @@ def login():
             print(user_login)
             # print(user_login[0])
             login_user(user_login)
-            return redirect(url_for('index'))
+            return redirect(url_for('index_tv'))
         # Могновенные сообщения, курс по Фласку
         # flash("Неверная пара логин/пароль", "error")
         print("ошибка")
