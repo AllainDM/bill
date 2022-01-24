@@ -208,5 +208,9 @@ function postMain(tv, postType) {
     // !!! Не работает, нужно поработать на коллбеком
     // !!!  Два раза отображает таблицу
     // start();
+    request.addEventListener('load', () => {
+        console.log("Загрузка");
+        start("start");
+    });
 };
 

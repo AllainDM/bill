@@ -266,7 +266,6 @@ function postMain(tv, postType) {
     // start();
 
     request.addEventListener('load', () => {
-        // const response = JSON.parse(req.responseText);
         console.log("Загрузка");
         start("start");
     });
