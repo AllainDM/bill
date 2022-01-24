@@ -1,6 +1,4 @@
 console.log('Скрипт для приставок успешно загружен');
-// mainUrl = 'http://bill2unetcom.ru';
-// mainUrl = '127.0.0.1';
 
 // Первичная загрузка шапки таблицы
 function tableStart(tab) {
@@ -15,7 +13,7 @@ function tableStart(tab) {
         </tr>`;
 }
 // Отображаем таблички под разные статусы
-tableStart("tab1");
+// tableStart("tab1");
 
 // Запрос на сервер при загрузке страницы
 function start(type) {
@@ -145,7 +143,7 @@ start("start");
 // };
 
 // Сбор инфы для отправки на сервер
-document.getElementById('add_tv').addEventListener('click', () => {
+document.getElementById('add').addEventListener('click', () => {
 
     let mac = document.getElementById('mac').value;
     if (mac == '') {
@@ -167,22 +165,11 @@ document.getElementById('add_tv').addEventListener('click', () => {
     let date = new Date().toLocaleString();
     console.log(date)
 
-    // Убираю параметр status_id из-за сложностей в автоопределении статуса на беке
-    // let status_id;
-    // if (status == 'Установлен') {
-    //     status_id = 4;
-    // } else if (status == 'В офисе') {
-    //     status_id = 2;
-    // } else if (status == 'На руках') {
-    //     status_id = 3;
-    // }  else {
-    //     status_id = 1;
-    // }
-
     console.log(monter);
     console.log(status);
 
     let comment = document.getElementById('comment').value;
+    document.getElementById('comment').value = '';
     console.log(comment);
 
     let post = {
@@ -191,28 +178,14 @@ document.getElementById('add_tv').addEventListener('click', () => {
         monter: monter,
         comment: comment,
         status: status,
-        // status_id: status_id,
         date: date
     };
     console.log(post);
 
     postMain(post, "post");
-
-    // Делаем запрос для получения обновленной информации
-    // !!! Не работает, нужно поработать на коллбеком
-    // !!!  Два раза отображает таблицу
-    // start();
 });
 
-// Делаем тесторую кнопку "удалить". Вызывается при загрузки приставок с сервера
-// function allBtnDelete() {
-//     document.querySelectorAll('.btn-del').forEach((btn, i) => {
-//         btn.addEventListener('click', () => {
-//             console.log(i);
-//             deleteTV(i);
-//         });
-//     });
-// };
+
 
 // Кнопка удалить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output). 
 function btnDelete(num) {
@@ -265,7 +238,7 @@ function postMain(tv, postType) {
     // !!!  Два раза отображает таблицу
     // start();
     request.addEventListener('load', () => {
-        console.log("Загрузка");
+        console.log("Автообновление");
         start("start");
     });
 };

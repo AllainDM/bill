@@ -2,3 +2,7 @@
 __pycache__/
 
 bill_tvip.db
+bill.db
+
+# PyCharm
+# .idea /

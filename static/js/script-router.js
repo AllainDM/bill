@@ -14,7 +14,7 @@ function tableStart(tab) {
         </tr>`;
 }
 // Отображаем таблички под разные статусы
-tableStart("tab1");
+// tableStart("tab1");
 
 // Запрос на сервер при загрузке страницы
 function start(type) {
@@ -34,13 +34,15 @@ function start(type) {
 // Отображение ответа с сервера
 // Таблица с БД
 // 0 - порядковый номер в таблице
-// 1 - мак адрес
-// 2 - ид пользователя
-// 3 - монтажник
-// 4 - комментарий
-// 5 - статус
-//  - id статуса (для упрощения поиска в БД)
-// 6 - дата
+// 1 - wan мак адрес  Делаем конвертацию на фронте
+// 2 - lan мак адрес
+// 3 - модель роутера
+// 4 - ид пользователя
+// 5 - монтажник
+// 6 - комментарий
+// 7 - статус
+// нет - id статуса (для упрощения поиска в БД)
+// 8 - дата
 function output(res) {
     // Убираем лишние шапки табличек
     let tab1 = false;
@@ -57,19 +59,19 @@ function output(res) {
         // 4 - Установлен
         let tab;
         // Если у приставки статус, для таблички которого нет шапки, то она создается
-        if (item[5] == "В офисе") {
+        if (item[7] == "В офисе") {
             if (tab1 == false) {
                 tableStart("tab1");
                 tab1 = true;
             }
             tab = document.getElementById('tab1');
-        } else if (item[5] == "На руках") {
+        } else if (item[7] == "На руках") {
             if (tab2 == false) {
                 tableStart("tab2");
                 tab2 = true;
             }
             tab = document.getElementById('tab2');
-        } else if (item[5] == "Установлен") { 
+        } else if (item[7] == "Установлен") { 
             if (tab3 == false) {
                 tableStart("tab3");
                 tab3 = true;
@@ -83,13 +85,14 @@ function output(res) {
             tab = document.getElementById('tab4');
         }
         // Ранее селекту монтер и инпуту для ИД присваивался порядковый номер в массиве, id="monter${num + 1}" и id="idUser${num + 1}", сейчас ид приставки в БД
+        // <td id='th-mac'>${res[num][2]}</td> 
         tab.insertAdjacentHTML("beforeend", 
                 `<tr class="table-color">
-                <th id='th-model'>Модель222</th>
-                <td id='th-mac'>${res[num][1]}</td> 
-                <td id='th-status'>${res[num][5]}</td> 
+                <th id='th-model'>${res[num][3]}</th>
+                <td id='th-mac'>lan: ${res[num][2]}<br> <a href="https://bill.unetcom.ru/?mod=usr&act=list&go=1&search_segment=1&searchid=&search_kurator=0&search_region=0&search_district=&objid=&street=&objectname=&par=&flor=&flat=&wherefind=fullname&part=all&query=&searchip=&searchmac=${res[num][1]}&searchphonenum=&searchemail=&search_service=&search_tarif_type=now&search_tarifperiod_datestart=&search_tarifperiod_dateend=&abonement_when=now&search_abonement_id=&userstatus=-2&statusdatefrom=&statusdateto=&cli_type=-1&paytype=-1&speedtype=&isvip=&minbalanceznak=%3E&minbalance=&dc_nickname=&user_comment=&go=1&go=%CD%E0%E9%F2%E8+%EF%EE%EB%FC%E7%EE%E2%E0%F2%E5%EB%FF" target="_blank">wan: ${res[num][1]}</a></td> 
+                <td id='th-status'>${res[num][7]}</td> 
                 <td id='th-monter'><select id="monter${res[num][0]}">
-                    <option value="001">${res[num][3]}</option>
+                    <option value="001">${res[num][5]}</option>
                     <option value="002">Волосевич Дмитрий</option>
                     <option value="003">Комиссаров Александр</option>
                     <option value="004">Маснык Игорь</option>
@@ -100,9 +103,9 @@ function output(res) {
                     <option value="009">Шестаков Владимир</option>
                     <option value="010">неизвестно</option>
                 </select></td>
-                <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][2]}"></td> 
-                <td id='th-comment'><a href="https://bill.unetcom.ru/?mod=usr&act=viewinfo&uid=${res[num][2]}" target="_blank">${res[num][2]}</a> ${res[num][4]}</td> 
-                <td id='th-date'>${res[num][6]}</td> 
+                <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][4]}"></td> 
+                <td id='th-comment'><a href="https://bill.unetcom.ru/?mod=usr&act=viewinfo&uid=${res[num][4]}" target="_blank">${res[num][4]}</a> ${res[num][6]}</td> 
+                <td id='th-date'>${res[num][8]}</td> 
                 <td id='th-sav${res[num][0]}'><button class="btn-save">Сохранить</button></td>
                 <td id='th-del${res[num][0]}'><button class="btn-del">Удалить</button></td>
                 </tr>`
@@ -112,10 +115,10 @@ function output(res) {
     });
 };
 
-start("start");
+start("start_router");
 
 // Сбор инфы для отправки на сервер
-document.getElementById('add_tv').addEventListener('click', () => {
+document.getElementById('add').addEventListener('click', () => {
 
     let mac = document.getElementById('mac').value;
     if (mac == '') {
@@ -124,8 +127,19 @@ document.getElementById('add_tv').addEventListener('click', () => {
     };
     console.log(mac);
 
+    let wanMac = convertMac(mac);
+    console.log(wanMac);
+
     let mon = document.getElementById('monter');
     let monter = mon.options[mon.selectedIndex].text;
+
+    let mod = document.getElementById('model');
+    let model = mod.options[mod.selectedIndex].text;
+
+    if (model == '') {
+        alert('Укажите модель роутера');
+        return;
+    };
 
     let stat = document.getElementById('status');
     let status = stat.options[stat.selectedIndex].text;
@@ -137,10 +151,13 @@ document.getElementById('add_tv').addEventListener('click', () => {
     console.log(status);
 
     let comment = document.getElementById('comment').value;
+    document.getElementById('comment').value = '';
     console.log(comment);
 
     let post = {
-        mac: mac,
+        lan_mac: mac,
+        wan_mac: wanMac,
+        model: model,
         user_id: '',
         monter: monter,
         comment: comment,
@@ -150,7 +167,7 @@ document.getElementById('add_tv').addEventListener('click', () => {
     };
     console.log(post);
 
-    postMain(post, "post");
+    postMain(post, "add_router");
 
     // Делаем запрос для получения обновленной информации
     // !!! Не работает, нужно поработать на коллбеком
@@ -158,11 +175,28 @@ document.getElementById('add_tv').addEventListener('click', () => {
     // start();
 });
 
+// Конвертируем lan mac в wan mac.
+
+function hex2dec(hex) { // 16 в 10
+  return parseInt(hex,16); 
+}
+
+function dec2hex(hex) { // 10 в 16
+  return Number(hex).toString(16);
+}
+
+function convertMac(mac) { // Функция преобразует мак в десятичное и обратно, между добавляя 1 к значению
+    let macConvert = hex2dec(mac);
+    macConvert += 1;
+    macConvert = dec2hex(macConvert);
+    return macConvert
+}
+
 // Кнопка удалить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output). 
 function btnDelete(num) {
     document.getElementById(`th-del${num}`).addEventListener('click', () => {
         // console.log(`th-del${num}`);
-        postMain(num, "delete");
+        postMain(num, "delete_router");
     });
     // console.log(`th-del${num}`);
 };
@@ -191,7 +225,7 @@ function saveTV(num) {
         idUser: idUser,
         monter: monter
     }
-    postMain(post, "save");
+    postMain(post, "save_router");
 
 };
 
@@ -209,8 +243,8 @@ function postMain(tv, postType) {
     // !!!  Два раза отображает таблицу
     // start();
     request.addEventListener('load', () => {
-        console.log("Загрузка");
-        start("start");
+        console.log("Автообновление");
+        start("start_router");
     });
 };
 

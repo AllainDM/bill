@@ -8,13 +8,13 @@ from UserLogin import UserLogin
 
 
 # Конфигурация
-DATABASE = '/tmp/bill_tvip.db'
+DATABASE = '/tmp/bill.db'
 DEBUG = True
 SECRET_KEY = "afaabvoirj__bill__allaindemoupu@mail.ru"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-app.config.update(dict(DATABASE=os.path.join(app.root_path, 'bill_tvip.db')))
+app.config.update(dict(DATABASE=os.path.join(app.root_path, 'bill.db')))
 
 login_manager = LoginManager(app)
 
@@ -47,7 +47,7 @@ def create_db():
     db.close()
 
 
-# Функция из видео про фласк, она нужн дл язагрузки "меню" из БД для отображения на главной странице
+# Функция из видео про фласк, она нужн для загрузки "меню" из БД для отображения на главной странице
 # При создании экземпляра класса FDataBase, аргументом передается результат вызова функции соединения с БД
 # У меня получается два разных способа соединения с БД
 # По курсу фласка через FDataBase, а я делал отдельно, нужно будет перенести все на FDataBase
@@ -82,11 +82,36 @@ def read_sql3_bill_tvip():
     return records
 
 
+def read_sql3_bill_router():
+    con = connect_db2()
+    cur = con.cursor()
+    print("Подключен к SQLite")
+    query = f"""SELECT * FROM router"""
+    cur.execute(query)
+    records = cur.fetchall()
+    print(query)
+    print(records)
+    print("Количество записей:", len(records))
+    cur.close()
+    return records
+
+
+def write_sql3_bill_router(data_tuple):
+    con = connect_db2()
+    cur = con.cursor()
+    query = f"""INSERT INTO router (lan_mac, wan_mac, model, user_id, monter, comment, status, date) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
+    cur.execute(query, data_tuple)
+    con.commit()
+    print(query)
+    cur.close()
+    return
+
+
 def write_sql3_bill_tvip(data_tuple):
 # def write_sql3_bill_tvip(mac, user_id, monter, comment, status, status_num):
     con = connect_db2()
     cur = con.cursor()
-    print("Подключен к SQLite")
 # query = f"""INSERT INTO bill_tvip VALUES ("{mac}", "{user_id}", "{monter}", "{comment}", "{status}", "{status_num}")"""
     # {mac}, {user_id}, {monter}, {comment}, {status}, {status_num}
     query = f"""INSERT INTO tv (mac, user_id, monter, comment, status, date) 
@@ -111,11 +136,35 @@ def update_sql3_bill_tvip(data_tuple):
     return
 
 
+def update_sql3_bill_router(data_tuple):
+    con = connect_db2()
+    cur = con.cursor()
+    print("Подключен к SQLite для одновления")
+    query = f"""Update router set date = ?, user_id = ?, status = ?, monter = ? WHERE rowid = ?"""
+    cur.execute(query, data_tuple)
+    con.commit()
+    print(query)
+    cur.close()
+    return
+
+
 def delete_sql3_bill_tvip(num):
     con = connect_db2()
     cur = con.cursor()
     print("Подключен к SQLite")
     query = f"""DELETE FROM tv WHERE rowid = {num}"""
+    cur.execute(query)
+    con.commit()
+    print(query)
+    cur.close()
+    return
+
+
+def delete_sql3_bill_router(num):
+    con = connect_db2()
+    cur = con.cursor()
+    print("Подключен к SQLite")
+    query = f"""DELETE FROM router WHERE rowid = {num}"""
     cur.execute(query)
     con.commit()
     print(query)
@@ -201,7 +250,6 @@ def login():
             user_login = UserLogin().create(user)
             print("Создание экземпляра класса прошло успешно")
             print(user_login)
-            # print(user_login[0])
             login_user(user_login)
             return redirect(url_for('index_tv'))
         # Могновенные сообщения, курс по Фласку
@@ -226,7 +274,13 @@ def logout():
 def start():
     print("Первый запрос")
     response = read_sql3_bill_tvip()
-    # print(response)
+    print(jsonify(response))
+    return jsonify(response)
+
+
+@app.route("/start_router")
+def start_router():
+    response = read_sql3_bill_router()
     print(jsonify(response))
     return jsonify(response)
 
@@ -236,8 +290,16 @@ def delete():
     if request.method == "POST":
         print(f"Ид приставки", request.get_json())
         print(request)
-        print("Запрос")
         delete_sql3_bill_tvip(request.get_json())
+    return "ok"
+
+
+@app.route("/delete_router", methods=["POST", "GET"])
+def delete_router():
+    if request.method == "POST":
+        print(f"Ид роутера", request.get_json())
+        print(request)
+        delete_sql3_bill_router(request.get_json())
     return "ok"
 
 
@@ -245,25 +307,21 @@ def delete():
 def post():
     if request.method == "POST":
         data = request.get_json()
-        print(data["mac"])
-        print(data["user_id"])
-        print(data["monter"])
-        print(data["comment"])
-        print(data["status"])
-        # print(data["status_id"])
-        print(data["date"])
-        # data["comment"] = "Подменный коммент"
-        # if data["user_id"] > 0:
-        #     print("Указан ид юзера")
-        print(check_tv_status(data["monter"], data["user_id"]))
         data["status"] = check_tv_status(data["monter"], data["user_id"])
-        # write_sql3_bill_tvip(test["mac"], test["user_id"], test["monter"], test["comment"], test["status"],
-        #                      test["status_num"])
         data_tuple = (data["mac"], data["user_id"], data["monter"], data["comment"], data["status"], data["date"])
         write_sql3_bill_tvip(data_tuple)
-        print(data_tuple)
-        print("Выше был тюпл")
-        # write_sql3_bill_tvip(1,2,3,4,5,6)
+    return "ok"
+
+
+@app.route("/add_router", methods=["POST", "GET"])
+def add_router():
+    if request.method == "POST":
+        data = request.get_json()
+        # функция check_tv_status одинаково работает и для роутеров
+        data["status"] = check_tv_status(data["monter"], data["user_id"])
+        data_tuple = (data["lan_mac"], data["wan_mac"], data["model"],data["user_id"], data["monter"], data["comment"],
+                      data["status"], data["date"])
+        write_sql3_bill_router(data_tuple)
     return "ok"
 
 
@@ -274,11 +332,18 @@ def save():
         data["status"] = check_tv_status(data["monter"], data["idUser"])
         # id посылаем последним, чтоб было удобнее использовать его в поиске
         data_tuple = (data["date"], data["idUser"], data["status"], data["monter"], data["id"])
-        print(data["date"])
-        print(data["id"])
-        print(data["idUser"])
         update_sql3_bill_tvip(data_tuple)
-        print(data_tuple)
+    return "ok"
+
+
+@app.route("/save_router", methods=["POST", "GET"])
+def save_router():
+    if request.method == "POST":
+        data = request.get_json()
+        data["status"] = check_tv_status(data["monter"], data["idUser"])
+        # id посылаем последним, чтоб было удобнее использовать его в поиске
+        data_tuple = (data["date"], data["idUser"], data["status"], data["monter"], data["id"])
+        update_sql3_bill_router(data_tuple)
     return "ok"
 
 
