@@ -6,16 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5ef43993-2702-4f7b-928f-2861a8018709" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sq_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sq_db.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/script-router.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/script-router.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/script-tv.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/script-tv.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/router.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/router.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tv.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tv.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -156,8 +156,8 @@ document.getElementById('add').addEventListener('click', () => {
     let mon = document.getElementById('monter');
     let monter = mon.options[mon.selectedIndex].text;
 
-    let stat = document.getElementById('status');
-    let status = stat.options[stat.selectedIndex].text;
+    // let stat = document.getElementById('status');
+    // let status = stat.options[stat.selectedIndex].text;
     // if (status == '') {
     //     alert('Укажите статус(Местонахождение приставки).');
     //     return;
@@ -179,7 +179,7 @@ document.getElementById('add').addEventListener('click', () => {
         user_id: '',
         monter: monter,
         comment: comment,
-        status: status,
+        // status: status,
         date: date
     };
     console.log(post);
