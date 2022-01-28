@@ -28,7 +28,7 @@ def load_user(user_id):
 
 def connect_db():
     conn = sqlite3.connect(app.config['DATABASE'])
-    conn.row_factory = sqlite3.Row # Формирование ответа в виде словаря, а не кортежа
+    conn.row_factory = sqlite3.Row  # Формирование ответа в виде словаря, а не кортежа
     return conn
 
 
@@ -65,28 +65,12 @@ def close_db(error):
         g.link_db.close()
 
 
-def read_sql3_bill_tvip():
+# Чтение всех записей из таблицы
+def read_sql3_bill(table):
     con = connect_db2()
     cur = con.cursor()
-    print("Подключен к SQLite")
-    query = f"""SELECT * FROM tv"""
-    cur.execute(query)
-    records = cur.fetchall()
-    print(query)
-    print(records)
-    print(f"Количество записей: {len(records)}")
-    print("Количество записей: ", {len(records)})
-    print("Количество записей: ", len(records))
-    print("Количество записей:", len(records))
-    cur.close()
-    return records
-
-
-def read_sql3_bill_router():
-    con = connect_db2()
-    cur = con.cursor()
-    print("Подключен к SQLite")
-    query = f"""SELECT * FROM router"""
+    print("Подключен к SQLite с использованием аргумента для определения таблицы")
+    query = f"""SELECT * FROM {table}"""
     cur.execute(query)
     records = cur.fetchall()
     print(query)
@@ -96,6 +80,7 @@ def read_sql3_bill_router():
     return records
 
 
+# Добавление нового роутера
 def write_sql3_bill_router(data_tuple):
     con = connect_db2()
     cur = con.cursor()
@@ -108,11 +93,12 @@ def write_sql3_bill_router(data_tuple):
     return
 
 
+# Добавление новой приставки
 def write_sql3_bill_tvip(data_tuple):
-# def write_sql3_bill_tvip(mac, user_id, monter, comment, status, status_num):
+    # def write_sql3_bill_tvip(mac, user_id, monter, comment, status, status_num):
     con = connect_db2()
     cur = con.cursor()
-# query = f"""INSERT INTO bill_tvip VALUES ("{mac}", "{user_id}", "{monter}", "{comment}", "{status}", "{status_num}")"""
+    # query = f"""INSERT INTO bill_tvip VALUES ("{mac}", "{user_id}", "{monter}", "{comment}", "{status}", "{status_num}")"""
     # {mac}, {user_id}, {monter}, {comment}, {status}, {status_num}
     query = f"""INSERT INTO tv (mac, user_id, monter, comment, status, date) 
     VALUES (?, ?, ?, ?, ?, ?)"""
@@ -127,7 +113,7 @@ def write_sql3_bill_tvip(data_tuple):
 def update_sql3_bill_tvip(data_tuple):
     con = connect_db2()
     cur = con.cursor()
-    print("Подключен к SQLite для одновления")
+    print("Подключен к SQLite для обновления")
     query = f"""Update tv set date = ?, user_id = ?, status = ?, monter = ? WHERE rowid = ?"""
     cur.execute(query, data_tuple)
     con.commit()
@@ -139,7 +125,7 @@ def update_sql3_bill_tvip(data_tuple):
 def update_sql3_bill_router(data_tuple):
     con = connect_db2()
     cur = con.cursor()
-    print("Подключен к SQLite для одновления")
+    print("Подключен к SQLite для обновления")
     query = f"""Update router set date = ?, user_id = ?, status = ?, monter = ? WHERE rowid = ?"""
     cur.execute(query, data_tuple)
     con.commit()
@@ -148,11 +134,11 @@ def update_sql3_bill_router(data_tuple):
     return
 
 
-def delete_sql3_bill_tvip(num):
+def delete_sql3_bill(num, table):
     con = connect_db2()
     cur = con.cursor()
     print("Подключен к SQLite")
-    query = f"""DELETE FROM tv WHERE rowid = {num}"""
+    query = f"""DELETE FROM {table} WHERE rowid = {num}"""
     cur.execute(query)
     con.commit()
     print(query)
@@ -160,11 +146,38 @@ def delete_sql3_bill_tvip(num):
     return
 
 
-def delete_sql3_bill_router(num):
+def save_comments_sql3_bill(data_tuple, table):
     con = connect_db2()
     cur = con.cursor()
-    print("Подключен к SQLite")
-    query = f"""DELETE FROM router WHERE rowid = {num}"""
+    query = f"""INSERT INTO {table} (comment, id) 
+        VALUES (?, ?)"""
+    cur.execute(query, data_tuple)
+    con.commit()
+    print(query)
+    cur.close()
+    return
+
+
+# Читаем все записи комментариев для выбранного id
+def read_comments_sql3_bill(table, id, rowid):
+    con = connect_db2()
+    cur = con.cursor()
+    query = f"""SELECT * FROM {table} where {rowid} = {id}"""
+    cur.execute(query)
+    records = cur.fetchall()
+    print(query)
+    cur.close()
+    return records
+
+
+def update_comments_sql3_bill(comment, table, id):
+    con = connect_db2()
+    cur = con.cursor()
+    print(f"Подключен к SQLite для обновления комментария в таблице {table}")
+    print(comment)
+    print(table)
+    print(id)
+    query = f"""Update {table} set comment = {comment} WHERE rowid = {id}"""
     cur.execute(query)
     con.commit()
     print(query)
@@ -172,6 +185,8 @@ def delete_sql3_bill_router(num):
     return
 
 
+# Функция автоопределения статуса, работает как для тв так и для роутеров
+# Если есть ид пользователя == установлен, нет ид есть монтажник == на руках, иначе == в офисе
 def check_tv_status(monter, id_user):
     print(f"ид юзера в проверочной функции:", id_user)
     if id_user:
@@ -272,16 +287,16 @@ def logout():
 
 @app.route("/start")
 def start():
-    print("Первый запрос")
-    response = read_sql3_bill_tvip()
-    print(jsonify(response))
+    # print("Первый запрос")
+    response = read_sql3_bill("tv")
+    # print(jsonify(response))
     return jsonify(response)
 
 
 @app.route("/start_router")
 def start_router():
-    response = read_sql3_bill_router()
-    print(jsonify(response))
+    response = read_sql3_bill("router")
+    # print(jsonify(response))
     return jsonify(response)
 
 
@@ -290,16 +305,16 @@ def delete():
     if request.method == "POST":
         print(f"Ид приставки", request.get_json())
         print(request)
-        delete_sql3_bill_tvip(request.get_json())
+        delete_sql3_bill(request.get_json(), "tv")
     return "ok"
 
 
 @app.route("/delete_router", methods=["POST", "GET"])
 def delete_router():
     if request.method == "POST":
-        print(f"Ид роутера", request.get_json())
+        # print(f"Ид роутера", request.get_json())
         print(request)
-        delete_sql3_bill_router(request.get_json())
+        delete_sql3_bill(request.get_json(), "router")
     return "ok"
 
 
@@ -319,6 +334,7 @@ def add_router():
         data = request.get_json()
         # функция check_tv_status одинаково работает и для роутеров
         data["status"] = check_tv_status(data["monter"], data["user_id"])
+        # data["status"] больше не приходит с фронта, она добавляется результатом выполнения функции
         data_tuple = (data["lan_mac"], data["wan_mac"], data["model"],data["user_id"], data["monter"], data["comment"],
                       data["status"], data["date"])
         write_sql3_bill_router(data_tuple)
@@ -344,6 +360,45 @@ def save_router():
         # id посылаем последним, чтоб было удобнее использовать его в поиске
         data_tuple = (data["date"], data["idUser"], data["status"], data["monter"], data["id"])
         update_sql3_bill_router(data_tuple)
+    return "ok"
+
+
+@app.route("/save_comment", methods=["POST", "GET"])
+def save_comment():
+    if request.method == "POST":
+        data = request.get_json()
+        data_tuple = (data["comment"], data["id"])
+        # Сохраним в одной из таблиц comments
+        save_comments_sql3_bill(data_tuple, data["table"])
+        # Сложная схема но...
+        # Нужно извлечь все комменты для этого id и записать их в основную таблицу
+        comments = read_comments_sql3_bill(data["table"], data["id"], "id")
+        # print(f"Все комментарии", comments)
+        # print(data["id"])
+        all_comments = ""
+        # base_comments = ""
+        if data["table"] == "commentsRouter":
+            base_comments = read_comments_sql3_bill("router", data["id"], "rowid")
+            all_comments += base_comments[0][6]
+        elif data["table"] == "commentsTV":
+            base_comments = read_comments_sql3_bill("tv", data["id"], "rowid")
+            all_comments += base_comments[0][4]
+        # print(base_comments[0][4])
+        # print(base_comments[0][6])
+        # print(type(base_comments))
+        # print("Смотри выше")
+        for x in comments:
+            print(type(x[1]))
+            all_comments += x[1]
+        new_comments = f"'{all_comments}'"
+        # print(new_comments)
+        # print(all_comments)
+        # print(type(all_comments))
+        if data["table"] == "commentsRouter":
+            update_comments_sql3_bill(new_comments, "router", data["id"])
+        elif data["table"] == "commentsTV":
+            update_comments_sql3_bill(new_comments, "tv", data["id"])
+        # print(all_comments)
     return "ok"
 
 

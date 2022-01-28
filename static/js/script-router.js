@@ -1,6 +1,7 @@
 console.log('Скрипт для роутеров успешно загружен');
 
 // Первичная загрузка шапки таблицы
+// <th class="table-th" id='th-date'>Дата</th>
 function tableStart(tab) {
     document.getElementById(`${tab}`).innerHTML = `<tr class="table-color">
             <th class="table-th" id='th-model'>Модель</th>
@@ -9,7 +10,6 @@ function tableStart(tab) {
             <th class="table-th" id='th-monter'>Монтажник</th>
             <th class="table-th" id='th-id'>ИД</th>
             <th class="table-th" id='th-comment'>Комментарий</th>
-            <th class="table-th" id='th-date'>Дата</th>
             <th class="table-th" id='th-btn'></th>
         </tr>`;
 }
@@ -86,11 +86,12 @@ function output(res) {
         }
         // Ранее селекту монтер и инпуту для ИД присваивался порядковый номер в массиве, id="monter${num + 1}" и id="idUser${num + 1}", сейчас ид приставки в БД
         // <td id='th-mac'>${res[num][2]}</td> 
+        // <td id='th-date'>${res[num][8]}</td> 
         tab.insertAdjacentHTML("beforeend", 
                 `<tr class="table-color">
                 <th id='th-model'>${res[num][3]}</th>
                 <td id='th-mac'>lan: ${res[num][2]}<br> <a href="https://bill.unetcom.ru/?mod=usr&act=list&go=1&search_segment=1&searchid=&search_kurator=0&search_region=0&search_district=&objid=&street=&objectname=&par=&flor=&flat=&wherefind=fullname&part=all&query=&searchip=&searchmac=${res[num][1]}&searchphonenum=&searchemail=&search_service=&search_tarif_type=now&search_tarifperiod_datestart=&search_tarifperiod_dateend=&abonement_when=now&search_abonement_id=&userstatus=-2&statusdatefrom=&statusdateto=&cli_type=-1&paytype=-1&speedtype=&isvip=&minbalanceznak=%3E&minbalance=&dc_nickname=&user_comment=&go=1&go=%CD%E0%E9%F2%E8+%EF%EE%EB%FC%E7%EE%E2%E0%F2%E5%EB%FF" target="_blank">wan: ${res[num][1]}</a></td> 
-                <td id='th-status'>${res[num][7]}</td> 
+                <td id='th-status'>${res[num][7]} <a href="https://bill.unetcom.ru/?mod=usr&act=viewinfo&uid=${res[num][4]}" target="_blank">${res[num][4]}</a></td> 
                 <td id='th-monter'><select id="monter${res[num][0]}">
                     <option value="001">${res[num][5]}</option>
                     <option value="002">Волосевич Дмитрий</option>
@@ -104,14 +105,15 @@ function output(res) {
                     <option value="010">неизвестно</option>
                 </select></td>
                 <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][4]}"></td> 
-                <td id='th-comment'><a href="https://bill.unetcom.ru/?mod=usr&act=viewinfo&uid=${res[num][4]}" target="_blank">${res[num][4]}</a> ${res[num][6]}</td> 
-                <td id='th-date'>${res[num][8]}</td> 
+                <td id='th-comment'>${res[num][6]}</td> 
                 <td id='th-sav${res[num][0]}'><button class="btn-save">Сохранить</button></td>
+                <td id='th-comm${res[num][0]}'><button>Доб коммент.</button></td>
                 <td id='th-del${res[num][0]}'><button class="btn-del">Удалить</button></td>
                 </tr>`
         );
         btnDelete(res[num][0]);
         btnSave(res[num][0]);
+        btnComm(res[num][0]);
     });
 };
 
@@ -140,19 +142,18 @@ document.getElementById('add').addEventListener('click', () => {
         alert('Укажите модель роутера');
         return;
     };
-
-    let stat = document.getElementById('status');
-    let status = stat.options[stat.selectedIndex].text;
   
     let date = new Date().toLocaleString();
-    console.log(date)
 
-    console.log(monter);
-    console.log(status);
-
+    // Возьмем комент со странички и добавим ему время
     let comment = document.getElementById('comment').value;
+    if (comment !== "") {
+        comment = `${date}: ${comment} </br>`;
+    };
+    
+
+    // Удалим коммент на страничке
     document.getElementById('comment').value = '';
-    console.log(comment);
 
     let post = {
         lan_mac: mac,
@@ -161,7 +162,7 @@ document.getElementById('add').addEventListener('click', () => {
         user_id: '',
         monter: monter,
         comment: comment,
-        status: status,
+        // status: status,
         // status_id: status_id,
         date: date
     };
@@ -204,10 +205,8 @@ function btnDelete(num) {
 // Кнопка сохранить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output).
 function btnSave(num) {
     document.getElementById(`th-sav${num}`).addEventListener('click', () => {
-        // console.log(`th-sav${num}`);
         saveTV(num);
     });
-    // console.log(`th-sav${num}`);
 };
 
 function saveTV(num) {
@@ -223,25 +222,47 @@ function saveTV(num) {
         date: date,
         id: num,
         idUser: idUser,
-        monter: monter
+        monter: monter,
     }
     postMain(post, "save_router");
 
 };
 
+function btnComm(num) {
+    document.getElementById(`th-comm${num}`).addEventListener('click', () => {
+        newComment(num);
+    });
+};
+
+function newComment(num) {
+    let comment = prompt("Введите комментарий");
+    console.log(comment);
+    date = new Date().toLocaleString();
+    if (comment == null) {
+        return;
+    } else {
+        comment = `${date}: ${comment} </br>`;
+        let post = {
+            comment: comment,
+            id: num,
+            table: "commentsRouter"
+        };
+        postMain(post, "save_comment");
+        console.log(comment);
+        console.log(num);
+    }
+    
+};
+
 // POST запрос на сервер, первый агрумент ид Приставки, второй "тип" запроса(добавить, удалить, отредактировать...)
-function postMain(tv, postType) {
+function postMain(router, postType) {
     const request = new XMLHttpRequest();
     request.open('POST', `/${postType}`);
     request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
     
-    console.log(JSON.stringify(tv))
-    request.send(JSON.stringify(tv));
+    console.log(JSON.stringify(router))
+    request.send(JSON.stringify(router));
 
-    // Делаем запрос для получения обновленной информации
-    // !!! Не работает, нужно поработать на коллбеком
-    // !!!  Два раза отображает таблицу
-    // start();
     request.addEventListener('load', () => {
         console.log("Автообновление");
         start("start_router");

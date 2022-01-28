@@ -31,3 +31,15 @@ id integer PRIMARY KEY AUTOINCREMENT,
 name text NOT NULL,
 id_billing integer
 );
+
+CREATE TABLE IF NOT EXISTS commentsTV (
+rowid integer PRIMARY KEY AUTOINCREMENT,
+comment text,
+id integer
+);
+
+CREATE TABLE IF NOT EXISTS commentsRouter (
+rowid integer PRIMARY KEY AUTOINCREMENT,
+comment text,
+id integer
+);
