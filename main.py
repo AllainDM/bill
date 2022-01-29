@@ -159,7 +159,7 @@ def save_comments_sql3_bill(data_tuple, table):
 
 
 # Читаем все записи комментариев для выбранного id
-def read_comments_sql3_bill(table, id, rowid):
+def read_comments_sql3_bill(table, id, rowid="rowid"):
     con = connect_db2()
     cur = con.cursor()
     query = f"""SELECT * FROM {table} where {rowid} = {id}"""
@@ -363,8 +363,8 @@ def save_router():
     return "ok"
 
 
-@app.route("/save_comment", methods=["POST", "GET"])
-def save_comment():
+@app.route("/save_comment_old", methods=["POST", "GET"])
+def save_comment_old():
     if request.method == "POST":
         data = request.get_json()
         data_tuple = (data["comment"], data["id"])
@@ -373,32 +373,44 @@ def save_comment():
         # Сложная схема но...
         # Нужно извлечь все комменты для этого id и записать их в основную таблицу
         comments = read_comments_sql3_bill(data["table"], data["id"], "id")
-        # print(f"Все комментарии", comments)
-        # print(data["id"])
         all_comments = ""
-        # base_comments = ""
         if data["table"] == "commentsRouter":
             base_comments = read_comments_sql3_bill("router", data["id"], "rowid")
             all_comments += base_comments[0][6]
         elif data["table"] == "commentsTV":
             base_comments = read_comments_sql3_bill("tv", data["id"], "rowid")
             all_comments += base_comments[0][4]
-        # print(base_comments[0][4])
-        # print(base_comments[0][6])
-        # print(type(base_comments))
-        # print("Смотри выше")
         for x in comments:
             print(type(x[1]))
             all_comments += x[1]
         new_comments = f"'{all_comments}'"
-        # print(new_comments)
-        # print(all_comments)
-        # print(type(all_comments))
         if data["table"] == "commentsRouter":
             update_comments_sql3_bill(new_comments, "router", data["id"])
         elif data["table"] == "commentsTV":
             update_comments_sql3_bill(new_comments, "tv", data["id"])
-        # print(all_comments)
+    return "ok"
+
+
+@app.route("/save_comment", methods=["POST", "GET"])
+def save_comment():
+    if request.method == "POST":
+        data = request.get_json()
+        base_comments = read_comments_sql3_bill(data["table"], data["id"])
+        all_comments = ""
+        if data["table"] == "router":
+            all_comments += base_comments[0][6]
+        if data["table"] == "tv":
+            all_comments += base_comments[0][4]
+        print(f"base_comments:", base_comments)
+        print(f"all_comments:", all_comments)
+        print("Смотри выше")
+        all_comments += data["comment"]
+        print(f"all_comments:", all_comments)
+        new_comments = f"'{all_comments}'"
+        if data["table"] == "router":
+            update_comments_sql3_bill(new_comments, "router", data["id"])
+        if data["table"] == "tv":
+            update_comments_sql3_bill(new_comments, "tv", data["id"])
     return "ok"
 
 

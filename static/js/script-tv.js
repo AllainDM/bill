@@ -97,6 +97,7 @@ function output(res) {
         }
         // Ранее селекту монтер и инпуту для ИД присваивался порядковый номер в массиве, id="monter${num + 1}" и id="idUser${num + 1}", сейчас ид приставки в БД
         // <td id='th-date'>${res[num][6]}</td> 
+        // <td id='th-comm${res[num][0]}'><button>Доб коммент.</button></td>
         tab.insertAdjacentHTML("beforeend", 
                 `<tr class="table-color">
                 <td id='th-mac'>${res[num][1]}</td> 
@@ -114,9 +115,8 @@ function output(res) {
                     <option value="010">неизвестно</option>
                 </select></td>
                 <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][2]}"></td> 
-                <td id='th-comment'>${res[num][4]}</td> 
+                <td id='th-comm${res[num][0]}'><span class="add-comm">добавить</br></span>${res[num][4]}</td> 
                 <td id='th-sav${res[num][0]}'><button class="btn-save">Сохранить</button></td>
-                <td id='th-comm${res[num][0]}'><button>Доб коммент.</button></td>
                 <td id='th-del${res[num][0]}'><button class="btn-del">Удалить</button></td>
                 </tr>`
         );
@@ -163,7 +163,7 @@ document.getElementById('add').addEventListener('click', () => {
     //     return;
     // };
 
-    let date = new Date().toLocaleString();
+    let date = new Date().toLocaleString("ru");
 
     // Возьмем комент со странички и добавим ему время
     let comment = document.getElementById('comment').value;
@@ -207,7 +207,7 @@ function btnSave(num) {
 
 function saveTV(num) {
     console.log(`Сохранить tv с ид: ${num}`);
-    date = new Date().toLocaleString();
+    date = new Date().toLocaleString("ru");
     idUser = document.getElementById(`idUser${num}`).value;
     console.log(`Ид юзера: ${idUser}`);
 
@@ -232,15 +232,18 @@ function btnComm(num) {
 
 function newComment(num) {
     let comment = prompt("Введите комментарий");
-    date = new Date().toLocaleString();
+    console.log(comment);
+    date = new Date().toLocaleString("ru");
+    console.log(date);
     if (comment == null) {
         return
     } else {
         comment = `${date}: ${comment} </br>`;
+        console.log(comment);
         let post = {
             comment: comment,
             id: num,
-            table: "commentsTV"
+            table: "tv"
         };
         postMain(post, "save_comment");
         console.log(comment);

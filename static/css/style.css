@@ -30,6 +30,16 @@ header {
     font-size: 0.7rem;
 } 
 
+.add-comm{
+    border-bottom: 1px solid;
+}
+
+.add-comm:hover {
+    color: #5265f6;
+
+    cursor: pointer;
+}
+
 .display-none {
     display: none;
 }
