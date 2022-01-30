@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, session, redirect, request, url_for, g, jsonify
 from FDataBase import FDataBase
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from UserLogin import UserLogin
 
 
@@ -17,6 +17,7 @@ app.config.from_object(__name__)
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'bill.db')))
 
 login_manager = LoginManager(app)
+# Перенаправление при неавторизации
 login_manager.login_view = "login"
 
 
@@ -266,6 +267,7 @@ def login():
             user_login = UserLogin().create(user)
             print("Создание экземпляра класса прошло успешно")
             print(user_login)
+            print(current_user)
             login_user(user_login)
             return redirect(url_for('index_tv'))
         # Могновенные сообщения, курс по Фласку
@@ -291,6 +293,8 @@ def start():
     # print("Первый запрос")
     response = read_sql3_bill("tv")
     # print(jsonify(response))
+    print(f"Текущий пользователь:", current_user.get_name())
+    # user_id = current_user.get_id()
     return jsonify(response)
 
 
@@ -324,7 +328,9 @@ def post():
     if request.method == "POST":
         data = request.get_json()
         data["status"] = check_tv_status(data["monter"], data["user_id"])
-        data_tuple = (data["mac"], data["user_id"], data["monter"], data["comment"], data["status"], data["date"])
+        # Добавляем пользователя к комментарию
+        new_comment = str(current_user.get_name()) + ": " + data["comment"]
+        data_tuple = (data["mac"], data["user_id"], data["monter"], new_comment, data["status"], data["date"])
         write_sql3_bill_tvip(data_tuple)
     return "ok"
 
@@ -335,8 +341,11 @@ def add_router():
         data = request.get_json()
         # функция check_tv_status одинаково работает и для роутеров
         data["status"] = check_tv_status(data["monter"], data["user_id"])
+        # Добавляем пользователя к комментарию
+        new_comment = str(current_user.get_name()) + ": " + data["comment"]
+        print(new_comment)
         # data["status"] больше не приходит с фронта, она добавляется результатом выполнения функции
-        data_tuple = (data["lan_mac"], data["wan_mac"], data["model"],data["user_id"], data["monter"], data["comment"],
+        data_tuple = (data["lan_mac"], data["wan_mac"], data["model"],data["user_id"], data["monter"], new_comment,
                       data["status"], data["date"])
         write_sql3_bill_router(data_tuple)
     return "ok"
@@ -405,6 +414,8 @@ def save_comment():
         print(f"base_comments:", base_comments)
         print(f"all_comments:", all_comments)
         print("Смотри выше")
+        all_comments += str(current_user.get_name())
+        all_comments += ": "
         all_comments += data["comment"]
         print(f"all_comments:", all_comments)
         new_comments = f"'{all_comments}'"

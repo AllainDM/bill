@@ -17,4 +17,9 @@ class UserLogin:
         return False
 
     def get_id(self):
+        print("Поиск ид юзера")
         return str(self.__user['id'])
+
+    def get_name(self):
+        print("Поиск имени юзера")
+        return str(self.__user['name'])

@@ -49,6 +49,7 @@ function output(res) {
     let tab2 = false;
     let tab3 = false;
     let tab4 = false;
+    // Обязательно очистим все таблицы, иначе будет баг с удалением/перепещение последней записи
     document.getElementById('tab1').innerHTML = "";
     document.getElementById('tab2').innerHTML = "";
     document.getElementById('tab3').innerHTML = "";
