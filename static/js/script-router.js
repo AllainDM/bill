@@ -111,7 +111,7 @@ function output(res) {
                     <option value="010">неизвестно</option>
                 </select></td>
                 <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][4]}"></td> 
-                <td id='th-comm${res[num][0]}'><span class="add-comm">добавить</br></span>${res[num][6]}</td> 
+                <td><span id='th-comm${res[num][0]}' class="add-comm">добавить</br></span>${res[num][6]}</td> 
                 <td id='th-sav${res[num][0]}'><button class="btn-save">Сохранить</button></td>
                 <td id='th-del${res[num][0]}'><button class="btn-del">Удалить</button></td>
                 </tr>`
