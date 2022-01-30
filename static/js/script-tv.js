@@ -60,6 +60,10 @@ function output(res) {
     let tab2 = false;
     let tab3 = false;
     let tab4 = false;
+    document.getElementById('tab1').innerHTML = "";
+    document.getElementById('tab2').innerHTML = "";
+    document.getElementById('tab3').innerHTML = "";
+    document.getElementById('tab4').innerHTML = "";
     res.forEach((item, num) => {
         // Убираю параметр status_id из-за сложностей в автоопределении статуса на беке
         // console.log(`Статус ид: ${item[6]}`);
