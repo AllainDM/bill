@@ -49,7 +49,7 @@ function output(res) {
     let tab2 = false;
     let tab3 = false;
     let tab4 = false;
-    // Обязательно очистим все таблицы, иначе будет баг с удалением/перепещение последней записи
+    // Обязательно очистим все таблицы, иначе будет баг с удалением/перепещением последней записи
     document.getElementById('tab1').innerHTML = "";
     document.getElementById('tab2').innerHTML = "";
     document.getElementById('tab3').innerHTML = "";
@@ -154,11 +154,10 @@ document.getElementById('add').addEventListener('click', () => {
     let comment = document.getElementById('comment').value;
     if (comment !== "") {
         comment = `${date}: ${comment} </br>`;
+    } else {
+        comment = `Добавленно: ${date} </br>`;
     };
     
-
-    // Удалим коммент на страничке
-    document.getElementById('comment').value = '';
 
     let post = {
         lan_mac: mac,
@@ -173,7 +172,19 @@ document.getElementById('add').addEventListener('click', () => {
     };
     console.log(post);
 
-    postMain(post, "add_router");
+    result = confirm(`
+    Проверьте данные: 
+    Монтажник: ${post["monter"]} 
+    Модель: ${post["model"]}
+    Мак: ${post["lan_mac"]}
+    Комментарий: ${document.getElementById('comment').value}`)
+
+    if (result) {
+        postMain(post, "add_router");
+        // Удалим коммент на страничке
+        document.getElementById('comment').value = '';
+    };
+    
 
     // Делаем запрос для получения обновленной информации
     // !!! Не работает, нужно поработать на коллбеком

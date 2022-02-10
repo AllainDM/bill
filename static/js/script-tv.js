@@ -174,10 +174,10 @@ document.getElementById('add').addEventListener('click', () => {
     let comment = document.getElementById('comment').value;
     if (comment !== "") {
         comment = `${date}: ${comment} </br>`;
+    } else {
+        comment = `Добавленно: ${date} </br>`;
     };
 
-    // Удалим коммент на страничке
-    document.getElementById('comment').value = '';
 
     let post = {
         mac: mac,
@@ -189,7 +189,19 @@ document.getElementById('add').addEventListener('click', () => {
     };
     console.log(post);
 
-    postMain(post, "post");
+    result = confirm(`
+    Проверьте данные: 
+    Монтажник: ${post["monter"]} 
+    Мак: ${post["mac"]}
+    Комментарий: ${document.getElementById('comment').value}`)
+
+    if (result) {
+        postMain(post, "post");
+        // Удалим коммент на страничке
+        document.getElementById('comment').value = '';
+    };
+
+    // postMain(post, "post");
 });
 
 
