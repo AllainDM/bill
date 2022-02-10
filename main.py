@@ -72,7 +72,7 @@ def read_sql3_bill(table):
     con = connect_db2()
     cur = con.cursor()
     print("Подключен к SQLite с использованием аргумента для определения таблицы")
-    query = f"""SELECT * FROM {table}"""
+    query = f"""SELECT * FROM {table} ORDER BY rowid DESC"""
     cur.execute(query)
     records = cur.fetchall()
     print(query)
