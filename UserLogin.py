@@ -23,3 +23,7 @@ class UserLogin:
     def get_name(self):
         print("Поиск имени юзера")
         return str(self.__user['name'])
+
+    def get_admin(self):
+        print("Проверка на админку")
+        return str(self.__user['admin'])

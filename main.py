@@ -278,6 +278,18 @@ def login():
     return render_template("login.html", title="Авторизация")
 
 
+@app.route("/regi", methods=["POST", "GET"])
+def register():
+    logpsw = 'pbkdf2:sha256:260000$l4FRf4DJeWkAXRN6$b8dc2cd889245f35e87132754e91f784724ccbbf905007e0187d411dea5dc2c7'
+    if request.method == "POST":
+        if check_password_hash(logpsw, request.form['logpsw']):
+            hash = generate_password_hash(request.form['psw'])
+            res = dbase.addUser(request.form['login'], hash, request.form['name'])
+
+            return redirect(url_for('index_tv'))
+    return render_template("reg.html", title="Регистрация")
+
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -310,7 +322,13 @@ def delete():
     if request.method == "POST":
         print(f"Ид приставки", request.get_json())
         print(request)
-        delete_sql3_bill(request.get_json(), "tv")
+        user_admin = current_user.get_admin()
+        if user_admin == "1":
+            delete_sql3_bill(request.get_json(), "tv")
+            print("Admin")
+        else:
+            print("no Admin")
+
     return "ok"
 
 
@@ -319,7 +337,13 @@ def delete_router():
     if request.method == "POST":
         # print(f"Ид роутера", request.get_json())
         print(request)
-        delete_sql3_bill(request.get_json(), "router")
+        user_admin = current_user.get_admin()
+        if user_admin == "1":
+            delete_sql3_bill(request.get_json(), "router")
+            print("Admin")
+        else:
+            print("no Admin")
+
     return "ok"
 
 
