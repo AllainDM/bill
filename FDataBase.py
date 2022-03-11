@@ -20,7 +20,7 @@ class FDataBase:
 
         return False
 
-    def addUser(self, login, hpsw, name):
+    def addUser(self, login, hpsw, name, admin=0):
         try:
             self.__cur.execute(f"SELECT COUNT() as `count` FROM users WHERE login LIKE '{login}'")
             res = self.__cur.fetchone()
@@ -28,7 +28,7 @@ class FDataBase:
                 print("Пользователь с таким логином уже существует")
                 return False
 
-            self.__cur.execute("INSERT INTO users VALUES(NULL, ?, ?, ?)", (login, hpsw, name))
+            self.__cur.execute("INSERT INTO users VALUES(NULL, ?, ?, ?, ?)", (login, hpsw, name, admin))
             self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка добавления пользователя в БД " + str(e))

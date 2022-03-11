@@ -269,7 +269,7 @@ def login():
             print(user_login)
             print(current_user)
             login_user(user_login)
-            return redirect(url_for('index_tv'))
+            return redirect(url_for('index_router'))
         # Могновенные сообщения, курс по Фласку
         # flash("Неверная пара логин/пароль", "error")
         print("ошибка")
@@ -278,7 +278,7 @@ def login():
     return render_template("login.html", title="Авторизация")
 
 
-@app.route("/regi", methods=["POST", "GET"])
+@app.route("/reg", methods=["POST", "GET"])
 def register():
     logpsw = 'pbkdf2:sha256:260000$l4FRf4DJeWkAXRN6$b8dc2cd889245f35e87132754e91f784724ccbbf905007e0187d411dea5dc2c7'
     if request.method == "POST":
@@ -286,7 +286,9 @@ def register():
             hash = generate_password_hash(request.form['psw'])
             res = dbase.addUser(request.form['login'], hash, request.form['name'])
 
-            return redirect(url_for('index_tv'))
+            return redirect(url_for('login'))
+        else:
+            print("Код приглашение не верный")
     return render_template("reg.html", title="Регистрация")
 
 
