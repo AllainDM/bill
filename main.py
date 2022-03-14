@@ -136,6 +136,18 @@ def update_sql3_bill_router(data_tuple):
     return
 
 
+def update_history_sql3_bill_router(data_tuple):
+    con = connect_db2()
+    cur = con.cursor()
+    query = f"""INSERT INTO router_history (router_id, user_id, monter, date, who) 
+        VALUES (?, ?, ?, ?, ?)"""
+    cur.execute(query, data_tuple)
+    con.commit()
+    print(query)
+    cur.close()
+    return
+
+
 def delete_sql3_bill(num, table):
     con = connect_db2()
     cur = con.cursor()
@@ -395,7 +407,10 @@ def save_router():
         data["status"] = check_tv_status(data["monter"], data["idUser"])
         # id посылаем последним, чтоб было удобнее использовать его в поиске
         data_tuple = (data["date"], data["idUser"], data["status"], data["monter"], data["id"])
+        data_tuple_history =(data["id"], data["idUser"], data["monter"], data["date"], current_user.get_name())
+        print(f"!!! Изменения: {data_tuple_history}")
         update_sql3_bill_router(data_tuple)
+        update_history_sql3_bill_router(data_tuple_history)
     return "ok"
 
 

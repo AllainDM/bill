@@ -100,15 +100,17 @@ function output(res) {
                 <td id='th-status'>${res[num][7]} <a href="https://bill.unetcom.ru/?mod=usr&act=viewinfo&uid=${res[num][4]}" target="_blank">${res[num][4]}</a></td> 
                 <td id='th-monter'><select id="monter${res[num][0]}">
                     <option value="001">${res[num][5]}</option>
-                    <option value="002">Волосевич Дмитрий</option>
-                    <option value="003">Комиссаров Александр</option>
-                    <option value="004">Маснык Игорь</option>
-                    <option value="005">Куропятников Сергей</option>
-                    <option value="006">Павлов Юра</option>
-                    <option value="007">Соловьев Александр</option>
-                    <option value="008">Черных Анатолий</option>
-                    <option value="009">Шестаков Владимир</option>
-                    <option value="010">неизвестно</option>
+                    <option value="002"></option>
+                    <option value="003">Волосевич Дмитрий</option>
+                    <option value="004">Комиссаров Александр</option>
+                    <option value="005">Маснык Игорь</option>
+                    <option value="006">Куропятников Сергей</option>
+                    <option value="007">Павлов Юра</option>
+                    <option value="008">Соловьев Александр</option>
+                    <option value="009">Черных Анатолий</option>
+                    <option value="010">Шестаков Владимир</option>
+                    <option value="011">неизвестно</option>
+                    <option value="012"></option>
                 </select></td>
                 <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][4]}"></td> 
                 <td><span id='th-comm${res[num][0]}' class="add-comm">добавить</br></span>${res[num][6]}</td> 
@@ -132,6 +134,10 @@ document.getElementById('add').addEventListener('click', () => {
         alert('Укажите мак адрес. Так же нужно сделать проверку на правильное написание мак адреса и на его совпадение');
         return;
     };
+    if (mac.length < 12) {
+        alert("Слишком короткий мак адрес.");
+        return;
+    }
     console.log(mac);
 
     let wanMac = convertMac(mac);
@@ -204,8 +210,19 @@ function dec2hex(hex) { // 10 в 16
 
 function convertMac(mac) { // Функция преобразует мак в десятичное и обратно, между добавляя 1 к значению
     let macConvert = hex2dec(mac);
+    
     macConvert += 1;
     macConvert = dec2hex(macConvert);
+
+    // Если вначале мака нули, то они удаляются, возвращаем просто считая сколько осталось символов и добавляя нужное количество до 12ти
+    if (macConvert.length < 12) {
+        let a = ""
+        for (let x = 1; x <= 12 - macConvert.length; x++) {
+            a += "0"
+        }
+        macConvert = a + macConvert;
+    }
+    console.log(`Мак: ${macConvert}`)
     return macConvert
 }
 
