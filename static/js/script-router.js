@@ -115,12 +115,15 @@ function output(res) {
                 <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][4]}"></td> 
                 <td><span id='th-comm${res[num][0]}' class="add-comm">добавить</br></span>${res[num][6]}</td> 
                 <td id='th-sav${res[num][0]}'><button class="btn-save">Сохранить</button></td>
+                <td id='th-arch${res[num][0]}'><button class="btn-arch">В архив</button></td>
                 <td id='th-del${res[num][0]}'><button class="btn-del">Удалить</button></td>
                 </tr>`
         );
+        //Вызов функций навешивания событий на кнопки
         btnDelete(res[num][0]);
         btnSave(res[num][0]);
         btnComm(res[num][0]);
+        btnArch(res[num][0]);
     });
 };
 
@@ -131,11 +134,13 @@ document.getElementById('add').addEventListener('click', () => {
 
     let mac = document.getElementById('mac').value;
     if (mac == '') {
-        alert('Укажите мак адрес. Так же нужно сделать проверку на правильное написание мак адреса и на его совпадение');
+        alert('Укажите мак адрес.');
         return;
-    };
-    if (mac.length < 12) {
+    } else if (mac.length < 12) {
         alert("Слишком короткий мак адрес.");
+        return;
+    } else if (mac.length > 12) {
+        alert("Слишком длинный мак адрес.");
         return;
     }
     console.log(mac);
@@ -226,19 +231,31 @@ function convertMac(mac) { // Функция преобразует мак в д
     return macConvert
 }
 
-// Кнопка удалить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output). 
+// Кнопка удалить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждого роутера, при переборе массива с роутерами(function output).
 function btnDelete(num) {
     document.getElementById(`th-del${num}`).addEventListener('click', () => {
-        // console.log(`th-del${num}`);
         postMain(num, "delete_router");
     });
-    // console.log(`th-del${num}`);
 };
 
-// Кнопка сохранить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждой приставки, при переборе массива с приставками(function output).
+// Кнопка сохранить. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждого роутера, при переборе массива с роутерами(function output).
 function btnSave(num) {
     document.getElementById(`th-sav${num}`).addEventListener('click', () => {
         saveTV(num);
+    });
+};
+
+// Кнопка добавить комментарий. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждого роутера, при переборе массива с роутерами(function output).
+function btnComm(num) {
+    document.getElementById(`th-comm${num}`).addEventListener('click', () => {
+        newComment(num);
+    });
+};
+
+// Кнопка отправить в архив. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждого роутера, при переборе массива с роутерами(function output).
+function btnArch(num) {
+    document.getElementById(`th-arch${num}`).addEventListener('click', () => {
+        postMain(num, "to_archive_router");
     });
 };
 
@@ -261,11 +278,7 @@ function saveTV(num) {
 
 };
 
-function btnComm(num) {
-    document.getElementById(`th-comm${num}`).addEventListener('click', () => {
-        newComment(num);
-    });
-};
+
 
 function newComment(num) {
     let comment = prompt("Введите комментарий");

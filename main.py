@@ -331,6 +331,15 @@ def start_router():
     return jsonify(response)
 
 
+@app.route("/to_archive_router", methods=["POST"])
+def to_archive_router():
+    print("Пытаемся найти роутер")
+    if request.method == "POST":
+        dbase.read_one_router(request.get_json())
+    # print(jsonify(response))
+    return "ok"
+
+
 @app.route("/delete", methods=["POST", "GET"])
 def delete():
     if request.method == "POST":
@@ -449,15 +458,16 @@ def save_comment():
         base_comments = read_comments_sql3_bill(data["table"], data["id"])
         all_comments = ""
         if data["table"] == "router":
-            all_comments += base_comments[0][6]
+            all_comments = base_comments[0][6] + all_comments
         if data["table"] == "tv":
-            all_comments += base_comments[0][4]
+            all_comments = base_comments[0][4] + all_comments
         print(f"base_comments:", base_comments)
         print(f"all_comments:", all_comments)
         print("Смотри выше")
-        all_comments += str(current_user.get_name())
-        all_comments += ": "
-        all_comments += data["comment"]
+        new_comments = str(current_user.get_name())
+        new_comments += ": "
+        new_comments += data["comment"]
+        all_comments = new_comments + all_comments
         print(f"all_comments:", all_comments)
         new_comments = f"'{all_comments}'"
         if data["table"] == "router":

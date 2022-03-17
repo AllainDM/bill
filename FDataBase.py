@@ -20,6 +20,22 @@ class FDataBase:
 
         return False
 
+    # Ищем роутер для последующего его перекопирования в таблицу архивных или удаленных
+    def read_one_router(self, num):
+        try:
+            self.__cur.execute(f"SELECT * FROM router WHERE rowid = {num} LIMIT 1")
+            res = self.__cur.fetchone()
+            if not res:
+                print("Роутер не найден")
+                return False
+            print("Роутер найден")
+            print(res[0])
+            return res
+        except sqlite3.Error as e:
+            print("Ошибка получения данных из БД " + str(e))
+
+        return False
+
     def addUser(self, login, hpsw, name, admin=0):
         try:
             self.__cur.execute(f"SELECT COUNT() as `count` FROM users WHERE login LIKE '{login}'")
