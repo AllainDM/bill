@@ -71,13 +71,13 @@ def close_db(error):
 def read_sql3_bill(table):
     con = connect_db2()
     cur = con.cursor()
-    print("Подключен к SQLite с использованием аргумента для определения таблицы")
+    # print("Подключен к SQLite с использованием аргумента для определения таблицы")
     query = f"""SELECT * FROM {table} ORDER BY rowid DESC"""
     cur.execute(query)
     records = cur.fetchall()
     print(query)
-    print(records)
-    print("Количество записей:", len(records))
+    # print(records)
+    # print("Количество записей:", len(records))
     cur.close()
     return records
 
@@ -187,10 +187,10 @@ def read_comments_sql3_bill(table, id, rowid="rowid"):
 def update_comments_sql3_bill(comment, table, id):
     con = connect_db2()
     cur = con.cursor()
-    print(f"Подключен к SQLite для обновления комментария в таблице {table}")
-    print(comment)
-    print(table)
-    print(id)
+    # print(f"Подключен к SQLite для обновления комментария в таблице {table}")
+    # print(comment)
+    # print(table)
+    # print(id)
     query = f"""Update {table} set comment = {comment} WHERE rowid = {id}"""
     cur.execute(query)
     con.commit()
@@ -271,15 +271,15 @@ def before_request():
 def login():
     if request.method == "POST":
         user = dbase.getUserByName(request.form['login'])
-        print("Класс FDataBase найден")
-        print(user)
-        print(request.form['psw'])
+        # print("Класс FDataBase найден")
+        # print(user)
+        # print(request.form['psw'])
         if user and check_password_hash(user[2], request.form['psw']):
-            print("Проверка выполненна")
+            # print("Проверка выполненна")
             user_login = UserLogin().create(user)
-            print("Создание экземпляра класса прошло успешно")
-            print(user_login)
-            print(current_user)
+            # print("Создание экземпляра класса прошло успешно")
+            # print(user_login)
+            # print(current_user)
             login_user(user_login)
             return redirect(url_for('index_router'))
         # Могновенные сообщения, курс по Фласку
@@ -328,12 +328,20 @@ def start():
 def start_router():
     response = read_sql3_bill("router")
     # print(jsonify(response))
+    # print(f"Текущий пользователь:", current_user.get_name())
+    return jsonify(response)
+
+
+@app.route("/start_name")
+def start_name():
+    response = current_user.get_name()
+    # response = read_sql3_bill("router")
     return jsonify(response)
 
 
 @app.route("/to_archive_router", methods=["POST"])
 def to_archive_router():
-    print("Пытаемся найти роутер")
+    # print("Пытаемся найти роутер")
     if request.method == "POST":
         dbase.read_one_router(request.get_json())
     # print(jsonify(response))
@@ -343,8 +351,8 @@ def to_archive_router():
 @app.route("/delete", methods=["POST", "GET"])
 def delete():
     if request.method == "POST":
-        print(f"Ид приставки", request.get_json())
-        print(request)
+        # print(f"Ид приставки", request.get_json())
+        # print(request)
         user_admin = current_user.get_admin()
         if user_admin == "1":
             delete_sql3_bill(request.get_json(), "tv")
@@ -359,7 +367,7 @@ def delete():
 def delete_router():
     if request.method == "POST":
         # print(f"Ид роутера", request.get_json())
-        print(request)
+        # print(request)
         user_admin = current_user.get_admin()
         if user_admin == "1":
             delete_sql3_bill(request.get_json(), "router")
@@ -390,7 +398,7 @@ def add_router():
         data["status"] = check_tv_status(data["monter"], data["user_id"])
         # Добавляем пользователя к комментарию
         new_comment = str(current_user.get_name()) + ": " + data["comment"]
-        print(new_comment)
+        # print(new_comment)
         # data["status"] больше не приходит с фронта, она добавляется результатом выполнения функции
         data_tuple = (data["lan_mac"], data["wan_mac"], data["model"],data["user_id"], data["monter"], new_comment,
                       data["status"], data["date"])
@@ -461,14 +469,14 @@ def save_comment():
             all_comments = base_comments[0][6] + all_comments
         if data["table"] == "tv":
             all_comments = base_comments[0][4] + all_comments
-        print(f"base_comments:", base_comments)
-        print(f"all_comments:", all_comments)
-        print("Смотри выше")
+        # print(f"base_comments:", base_comments)
+        # print(f"all_comments:", all_comments)
+        # print("Смотри выше")
         new_comments = str(current_user.get_name())
         new_comments += ": "
         new_comments += data["comment"]
         all_comments = new_comments + all_comments
-        print(f"all_comments:", all_comments)
+        # print(f"all_comments:", all_comments)
         new_comments = f"'{all_comments}'"
         if data["table"] == "router":
             update_comments_sql3_bill(new_comments, "router", data["id"])

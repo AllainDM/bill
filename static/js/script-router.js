@@ -20,10 +20,27 @@ function tableStart(tab) {
 function start(type) {
     const req = new XMLHttpRequest();
     req.open("GET", `/${type}`);
-     req.addEventListener('load', () => {
+    req.addEventListener('load', () => {
           const response = JSON.parse(req.responseText);
           console.log(response);
           output(response);
+    });
+    req.addEventListener('error', () => {
+        console.log('error')
+    });
+    req.send();
+    startName("start_name")
+};
+
+// Запрос имени пользователя 
+function startName(type) {
+    const req = new XMLHttpRequest();
+    req.open("GET", `/${type}`);
+    req.addEventListener('load', () => {
+          const response = JSON.parse(req.responseText);
+          console.log(response);
+          console.log("ook");
+          document.getElementById("user-name").innerText = `Пользователь: ${response}`
     });
     req.addEventListener('error', () => {
         console.log('error')
