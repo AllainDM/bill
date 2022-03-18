@@ -332,6 +332,16 @@ def start_router():
     return jsonify(response)
 
 
+@app.route("/router_archive")
+def router_archive():
+    response = read_sql3_bill("router_archive")
+    print("Смотри ниже")
+    print(response)
+    print(jsonify(response))
+    # print(f"Текущий пользователь:", current_user.get_name())
+    return jsonify(response)
+
+
 @app.route("/start_name")
 def start_name():
     response = current_user.get_name()
@@ -343,8 +353,15 @@ def start_name():
 def to_archive_router():
     # print("Пытаемся найти роутер")
     if request.method == "POST":
-        dbase.read_one_router(request.get_json())
-    # print(jsonify(response))
+        user_admin = current_user.get_admin()
+        if user_admin > "0":
+            router = dbase.read_one_router(request.get_json())
+            print("Пытаемся записать роутер")
+            dbase.write_router_to(router, "router_archive")
+            delete_sql3_bill(router[0], "router")
+            print("Admin")
+        else:
+            print("no Admin")
     return "ok"
 
 

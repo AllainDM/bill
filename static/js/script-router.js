@@ -39,7 +39,6 @@ function startName(type) {
     req.addEventListener('load', () => {
           const response = JSON.parse(req.responseText);
           console.log(response);
-          console.log("ook");
           document.getElementById("user-name").innerText = `Пользователь: ${response}`
     });
     req.addEventListener('error', () => {
@@ -145,6 +144,64 @@ function output(res) {
 };
 
 start("start_router");
+
+// Список архивных роутеров
+document.getElementById('router-archive').addEventListener("click", () => {
+    // a = document.querySelector('container-added')
+    // console.log(a)
+    const req = new XMLHttpRequest();
+    req.open("GET", `/router_archive`);
+    req.addEventListener('load', () => {
+          const response = JSON.parse(req.responseText);
+          console.log(response);
+          outputArchive(response);
+    });
+    req.addEventListener('error', () => {
+        console.log('error')
+    });
+    req.send();
+
+    
+});
+
+function outputArchive(response) {
+
+    tab = document.getElementById('tab5');
+
+    tableStart("tab5");
+
+    document.getElementById('tab1').innerHTML = "";
+    document.getElementById('tab2').innerHTML = "";
+    document.getElementById('tab3').innerHTML = "";
+    document.getElementById('tab4').innerHTML = "";
+
+
+    console.log("Смотри ниже");
+    console.log(response[0][0]);
+    console.log(response[0][1]);
+    console.log(response[0][2]);
+    console.log(response[0][3]);
+    console.log(response[0][4]);
+    console.log(response[0][5]);
+    console.log(response[0][6]);
+    console.log(response[0][7]);
+    console.log(response[0][8]);
+
+    response.forEach((item, num) => {
+        tab.insertAdjacentHTML("beforeend", 
+                `<tr class="table-color">
+                <th id='th-model'>${response[num][4]}</th>
+                <td id='th-mac'>lan: ${response[num][3]}<br> <a href="https://bill.unetcom.ru/?mod=usr&act=list&go=1&search_segment=1&searchid=&search_kurator=0&search_region=0&search_district=&objid=&street=&objectname=&par=&flor=&flat=&wherefind=fullname&part=all&query=&searchip=&searchmac=${response[num][2]}&searchphonenum=&searchemail=&search_service=&search_tarif_type=now&search_tarifperiod_datestart=&search_tarifperiod_dateend=&abonement_when=now&search_abonement_id=&userstatus=-2&statusdatefrom=&statusdateto=&cli_type=-1&paytype=-1&speedtype=&isvip=&minbalanceznak=%3E&minbalance=&dc_nickname=&user_comment=&go=1&go=%CD%E0%E9%F2%E8+%EF%EE%EB%FC%E7%EE%E2%E0%F2%E5%EB%FF" target="_blank">wan: ${response[num][2]}</a></td> 
+                <td id='th-status'>В архиве</a></td> 
+                <td id='th-monter'>${response[num][6]}</td>
+                <td id='th-id'><a href="https://bill.unetcom.ru/?mod=usr&act=viewinfo&uid=${response[num][5]}" target="_blank">${response[num][5]}</a></td> 
+                <td><span id='th-comm${response[num][1]}'</span>${response[num][7]}</td> 
+                
+                </tr>`)
+    })
+
+    
+}
 
 // Сбор инфы для отправки на сервер
 document.getElementById('add').addEventListener('click', () => {

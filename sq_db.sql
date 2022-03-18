@@ -37,20 +37,15 @@ name text,
 admin integer
 );
 
-CREATE TABLE IF NOT EXISTS monter (
-id integer PRIMARY KEY AUTOINCREMENT,
-name text NOT NULL,
-id_billing integer
-);
-
-CREATE TABLE IF NOT EXISTS commentsTV (
-rowid integer PRIMARY KEY AUTOINCREMENT,
+create table if not exists router_archive (
+rowid integer primary key autoincrement,
+id integer not null,
+wan_mac text,
+lan_mac text not null,
+model text not null,
+user_id integer,
+monter text,
 comment text,
-id integer
-);
-
-CREATE TABLE IF NOT EXISTS commentsRouter (
-rowid integer PRIMARY KEY AUTOINCREMENT,
-comment text,
-id integer
+status text,
+date text
 );

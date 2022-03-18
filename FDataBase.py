@@ -36,6 +36,20 @@ class FDataBase:
 
         return False
 
+    # Копируем роутер в другую таблицу(архив или удаленные)
+    def write_router_to(self, data_tuple, table):
+        try:
+            query = f"""INSERT INTO {table} (id, lan_mac, wan_mac, model, user_id, monter, comment, status, date) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+            self.__cur.execute(query, data_tuple)
+            self.__db.commit()
+
+        except sqlite3.Error as e:
+            print("Ошибка получения данных из БД " + str(e))
+
+        return False
+
+    # Добавить пользователя. Была сделанна временная возможность регистрации.
     def addUser(self, login, hpsw, name, admin=0):
         try:
             self.__cur.execute(f"SELECT COUNT() as `count` FROM users WHERE login LIKE '{login}'")
