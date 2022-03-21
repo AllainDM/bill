@@ -134,8 +134,9 @@ function output(res) {
                     <option value="008">Соловьев Александр</option>
                     <option value="009">Черных Анатолий</option>
                     <option value="010">Шестаков Владимир</option>
-                    <option value="011">неизвестно</option>
-                    <option value="012"></option>
+                    <option value="011">Тарабукин Егор</option>
+                    <option value="012">неизвестно</option>
+                    <option value="013"></option>
                 </select></td>
                 <td id='th-id'><input type="text" class="input-id" id="idUser${res[num][0]}" size="6px" value="${res[num][4]}"></td> 
                 <td><span id='th-comm${res[num][0]}' class="add-comm">добавить</br></span>${res[num][6]}</td> 
