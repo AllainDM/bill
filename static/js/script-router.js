@@ -1,5 +1,8 @@
 console.log('Скрипт для роутеров успешно загружен');
 
+// Массив с маками роутеров, для проверки совпадения до отправки на сервер
+let arrMacRouter = [];
+
 // Первичная загрузка шапки таблицы
 // <th class="table-th" id='th-date'>Дата</th>
 function tableStart(tab) {
@@ -70,7 +73,12 @@ function output(res) {
     document.getElementById('tab2').innerHTML = "";
     document.getElementById('tab3').innerHTML = "";
     document.getElementById('tab4').innerHTML = "";
+
+    arrMacRouter = []; // Очистим общий массив с маками роутеров
+
     res.forEach((item, num) => {
+        arrMacRouter.push(res[num][2]);
+        // console.log(arrMacRouter);
         // Убираю параметр status_id из-за сложностей в автоопределении статуса на беке
         // console.log(`Статус ид: ${item[6]}`);
         // Распределяем по табличкам согласно статусу
@@ -109,6 +117,7 @@ function output(res) {
         // <td id='th-mac'>${res[num][2]}</td> 
         // <td id='th-date'>${res[num][8]}</td> 
         // <td id='th-commTEST${res[num][0]}'><button>Доб коммент.</button></td>
+        
         tab.insertAdjacentHTML("beforeend", 
                 `<tr class="table-color">
                 <th id='th-model'>${res[num][3]}</th>
@@ -175,18 +184,6 @@ function outputArchive(response) {
     document.getElementById('tab3').innerHTML = "";
     document.getElementById('tab4').innerHTML = "";
 
-
-    console.log("Смотри ниже");
-    console.log(response[0][0]);
-    console.log(response[0][1]);
-    console.log(response[0][2]);
-    console.log(response[0][3]);
-    console.log(response[0][4]);
-    console.log(response[0][5]);
-    console.log(response[0][6]);
-    console.log(response[0][7]);
-    console.log(response[0][8]);
-
     response.forEach((item, num) => {
         tab.insertAdjacentHTML("beforeend", 
                 `<tr class="table-color">
@@ -206,21 +203,30 @@ function outputArchive(response) {
 // Сбор инфы для отправки на сервер
 document.getElementById('add').addEventListener('click', () => {
 
-    let mac = document.getElementById('mac').value;
+    // let mac = document.getElementById('mac').value.toLowerCase();
+    let mac2 = document.getElementById('mac').value;
+    let mac =  mac2.toLowerCase();
+    // console.log(typeof(mac));
+    // String(mac);
+    // mac.toLowerCase();
     if (mac == '') {
         alert('Укажите мак адрес.');
         return;
-    } else if (mac.length < 12) {
+    } else if (arrMacRouter.includes(`${mac}`)) {
+        alert("Такой мак уже есть.");
+        return;
+    }  else if (mac.length < 12) {
         alert("Слишком короткий мак адрес.");
         return;
     } else if (mac.length > 12) {
         alert("Слишком длинный мак адрес.");
         return;
     }
-    console.log(mac);
+
+    console.log(arrMacRouter.includes(`${mac}`));
+    // arrMacRouter.indexOf('mac');
 
     let wanMac = convertMac(mac);
-    console.log(wanMac);
 
     let mon = document.getElementById('monter');
     let monter = mon.options[mon.selectedIndex].text;
@@ -255,7 +261,7 @@ document.getElementById('add').addEventListener('click', () => {
         // status_id: status_id,
         date: date
     };
-    console.log(post);
+    // console.log(post);
 
     result = confirm(`
     Проверьте данные: 
@@ -301,7 +307,7 @@ function convertMac(mac) { // Функция преобразует мак в д
         }
         macConvert = a + macConvert;
     }
-    console.log(`Мак: ${macConvert}`)
+    // console.log(`Мак: ${macConvert}`)
     return macConvert
 }
 
@@ -328,16 +334,20 @@ function btnComm(num) {
 
 // Кнопка отправить в архив. Функция навешивает событие на каждую кнопку, присваивая каждой свой ид соответсвующий ид из БД, ид идет как аргумент при вызове функции. Запускается в конце отображения каждого роутера, при переборе массива с роутерами(function output).
 function btnArch(num) {
+    
     document.getElementById(`th-arch${num}`).addEventListener('click', () => {
+        a = document.getElementById(`idUser${num}`);
+        // console.log(a);
         postMain(num, "to_archive_router");
+
     });
 };
 
 function saveTV(num) {
-    console.log(`Сохранить tv с ид: ${num}`);
+    // console.log(`Сохранить tv с ид: ${num}`);
     date = new Date().toLocaleString("ru");
     idUser = document.getElementById(`idUser${num}`).value;
-    console.log(`Ид юзера: ${idUser}`);
+    // console.log(`Ид юзера: ${idUser}`);
 
     let mon = document.getElementById(`monter${num}`);
     let monter = mon.options[mon.selectedIndex].text;
@@ -356,7 +366,7 @@ function saveTV(num) {
 
 function newComment(num) {
     let comment = prompt("Введите комментарий");
-    console.log(comment);
+    // console.log(comment);
     date = new Date().toLocaleString("ru");
     console.log(date);
     if (comment == null) {
@@ -370,8 +380,8 @@ function newComment(num) {
             table: "router"
         };
         postMain(post, "save_comment");
-        console.log(comment);
-        console.log(num);
+        // console.log(comment);
+        // console.log(num);
     }
     
 };
